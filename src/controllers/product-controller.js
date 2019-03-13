@@ -56,7 +56,7 @@ exports.post = async function(req, res, next) {
     });
   } catch(err) {
     res.status(400).send({
-      message: 'Fail buil product'
+      message: 'Fail buil product!'
     });
   }
 };
