@@ -2,102 +2,89 @@
 
 const mongoose = require('mongoose');
 const Product = mongoose.model('Product');
+const repository = require('../repositories/product-repository');
 
-exports.get = function(req, res, next) {
-  Product.find({ }, 'title slug price')
-    .then(function(data) {
-      res.status(200).send(data);
-    })
-    .catch(function(err) {
-      res.status(400).send(err);
+exports.get = async function(req, res, next) {
+  try {
+    const data = await repository.get();
+    res.status(200).send(data);
+  } catch(err) {
+    res.status(500).send({ 
+      message: 'Fail your request'
     });
+  }
 };
 
-exports.getBySlug = function(req, res, next) {
-  Product.findOne({
-    slug: req.params.slug,
-    active: true // oly products actives
-  }, 'title description price tag')
-  .then(function(data) {
+exports.getBySlug = async function(req, res, next) {
+  try {
+    const data = await repository.getBySlug(req.params.slug);
     res.status(200).send(data);
-  })
-  .catch(function(err) {
-    res.status(400).send(err);
-  })
-};
-
-exports.getById = function(req, res, next) {
-  Product.findById(req.params.id, 'title description slug price')
-  .then(function (data) {
-    res.status(200).send(data);
-  })
-  .catch(function(err) {
-    res.status(400).send(err);
-  });
-};
-
-exports.getByTag = function(req, res, next) {
-  Product.find({
-    tag: req.params.tag, // as 'tag' is a array, the 'find' make a search in himself  
-    active: true
-  }, 'title descrition slug price tag')
-  .then(function(data) {
-    res.status(200).send(data);
-  })
-  .catch(function(err) {
-    res.status(200).send(err);
-  });
-};
-
-exports.post = function(req, res, next) {
-  const product = new Product(req.body);
-  product.save()
-    .then(function(data) {
-      res.status(201).send({ 
-        message: 'Success build product!' 
-      });
-    })
-    .catch(function(err) {
-      res.status(400).send({ 
-        message: 'Fail build product',
-        data: err
-      });
+  } catch(err) {
+    res.status(500).send({
+      message: 'Fail your request'
     });
+  }
 };
 
-exports.put = function(req, res, next) {
-  Product.findByIdAndUpdate(req.params.id, {
-    $set: {
-      title: req.body.title,
-      description: req.body.description,
-      slug: req.body.slug,
-      price: req.body.price 
-    }
-  })
-  .then(function(data) {
+exports.getById = async function(req, res, next) {
+  try {
+    const data = await repository.getById(req.params.id);
+    res.status(200).send(data);
+  } catch(err) {
+    res.status(400).send({
+      message: 'Fail your request'
+    });
+  }
+};
+
+exports.getByTag = async function(req, res, next) {
+  try {
+    const data = await repository.getByTag(req.params.tag);
+    res.status(200).send(data);
+  } catch (err) {
+    res.status(400).send({
+      message: 'Fail your request'
+    });
+  }
+};
+
+exports.post = async function(req, res, next) {
+  try {
+    await repository.create(req.body);
+    res.status(201).send({
+      message: 'Success build product!'
+    });
+  } catch(err) {
+    res.status(400).send({
+      message: 'Fail buil product'
+    });
+  }
+};
+
+exports.put = async function(req, res, next) {
+  try {
+    await repository.update(req.params.id, req.body);
     res.status(200).send({
       message: 'Success update product!'
     });
-  })
-  .catch(function(err) {
+  } catch(err) {
     res.status(400).send({
-      message: 'Fail update product!',
-      data: err
-    });
-  });
+      message: 'Fail update product!'
+    })
+  }
 };
 
-exports.delete = function(req, res, next) {
-  Product.findOneAndRemove(req.params.id)
-  .then(function(data) {
+// bug in delete
+exports.delete = async function(req, res, next) {
+  try {
+    await repository.delete(req.params.id);
     res.status(200).send({
       message: 'Success remove product!'
     });
-  })
-  .catch(function(err) {
+  } catch(err) {
     res.status(400).send({
       message: 'Fail remove product!',
       data: err
     });
-  });
+  }
 }; 
