@@ -3,7 +3,10 @@
 const express = require('express');
 const bodyparser = require('body-parser');
 const mongoose = require('mongoose');
+
 const Product = require('./models/product');
+const Customer = require('./models/customer')
+
 const indexRoute = require('./routes/index-route'); // load routes
 const productRoute = require('./routes/product-route'); // load product routes
 
