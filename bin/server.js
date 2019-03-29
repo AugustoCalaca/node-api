@@ -1,3 +1,5 @@
+'use strict';
+
 const app = require('../src/app');
 const http = require('http');
 const debug = require('debug')('balta:server');
