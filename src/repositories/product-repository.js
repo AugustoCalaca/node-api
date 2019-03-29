@@ -13,7 +13,7 @@ exports.get = async function() {
 exports.getBySlug = async function(slug) {
   const res = await Product.findOne({
     slug: slug,
-    active: true // active products only
+    active: true // only active products
   }, 'title description price tag');
   return res;
 };
