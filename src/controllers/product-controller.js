@@ -56,7 +56,7 @@ exports.post = async function(req, res, next) {
     });
   } catch(err) {
     res.status(400).send({
-      message: 'Fail buil product!'
+      message: 'Fail build product!'
     });
   }
 };
@@ -84,7 +84,7 @@ exports.delete = async function(req, res, next) {
   } catch(err) {
     res.status(400).send({
       message: 'Fail remove product!',
-      data: err
+      error: err
     });
   }
 }; 
